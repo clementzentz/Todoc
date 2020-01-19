@@ -25,10 +25,10 @@ public class TaskUnitTest {
         final Task task3 = new Task(3, 3, "task 3", new Date().getTime());
         final Task task4 = new Task(4, 4, "task 4", new Date().getTime());
 
-        assertEquals("Projet Tartampion", task1.getProject().getName());
-        assertEquals("Projet Lucidia", task2.getProject().getName());
-        assertEquals("Projet Circus", task3.getProject().getName());
-        assertNull(task4.getProject());
+        assertEquals("Projet Tartampion", task1.callGetProjectById().getName());
+        assertEquals("Projet Lucidia", task2.callGetProjectById().getName());
+        assertEquals("Projet Circus", task3.callGetProjectById().getName());
+        assertNull(task4.callGetProjectById());
     }
 
     @Test

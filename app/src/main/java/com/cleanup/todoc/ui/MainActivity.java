@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.Menu;
@@ -18,38 +19,46 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.cleanup.todoc.R;
+import com.cleanup.todoc.adapter.TasksAdapter;
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
+import com.cleanup.todoc.persistence.ProjectRepository;
+import com.cleanup.todoc.persistence.TaskRepository;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>Home activity of the application which is displayed when the user opens the app.</p>
- * <p>Displays the list of tasks.</p>
+ * <p>Displays the list of mTasks.</p>
  *
  * @author Gaëtan HERFRAY
  */
 public class MainActivity extends AppCompatActivity implements TasksAdapter.DeleteTaskListener {
+
+    private TaskRepository mTaskRepository;
+    private ProjectRepository mProjectRepository;
+
     /**
      * List of all projects available in the application
      */
     private final Project[] allProjects = Project.getAllProjects();
 
     /**
-     * List of all current tasks of the application
+     * List of all current mTasks of the application
      */
     @NonNull
-    private final ArrayList<Task> tasks = new ArrayList<>();
+    private final ArrayList<Task> mTasks = new ArrayList<>();
 
     /**
-     * The adapter which handles the list of tasks
+     * The adapter which handles the list of mTasks
      */
-    private final TasksAdapter adapter = new TasksAdapter(tasks, this);
+    private final TasksAdapter adapter = new TasksAdapter(mTasks, this);
 
     /**
-     * The sort method to be used to display tasks
+     * The sort method to be used to display mTasks
      */
     @NonNull
     private SortMethod sortMethod = SortMethod.NONE;
@@ -73,12 +82,12 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     private Spinner dialogSpinner = null;
 
     /**
-     * The RecyclerView which displays the list of tasks
+     * The RecyclerView which displays the list of mTasks
      */
     // Suppress warning is safe because variable is initialized in onCreate
     @SuppressWarnings("NullableProblems")
     @NonNull
-    private RecyclerView listTasks;
+    private RecyclerView recyclerViewTasks;
 
     /**
      * The TextView displaying the empty state
@@ -94,11 +103,16 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
         setContentView(R.layout.activity_main);
 
-        listTasks = findViewById(R.id.list_tasks);
+        recyclerViewTasks = findViewById(R.id.list_tasks);
         lblNoTasks = findViewById(R.id.lbl_no_task);
 
-        listTasks.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        listTasks.setAdapter(adapter);
+        recyclerViewTasks.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        recyclerViewTasks.setAdapter(adapter);
+
+
+        mTaskRepository = new TaskRepository(this);
+        mProjectRepository = new ProjectRepository(this);
+        retrieveTasks();
 
         findViewById(R.id.fab_add_task).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -135,7 +149,8 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
     @Override
     public void onDeleteTask(Task task) {
-        tasks.remove(task);
+        mTasks.remove(task);
+        mTaskRepository.deleteTask(task);
         updateTasks();
     }
 
@@ -203,41 +218,42 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     }
 
     /**
-     * Adds the given task to the list of created tasks.
+     * Adds the given task to the list of created mTasks.
      *
      * @param task the task to be added to the list
      */
     private void addTask(@NonNull Task task) {
-        tasks.add(task);
+        mTasks.add(task);
+        mTaskRepository.insertTask(task);
         updateTasks();
     }
 
     /**
-     * Updates the list of tasks in the UI
+     * Updates the list of mTasks in the UI
      */
     private void updateTasks() {
-        if (tasks.size() == 0) {
+        if (mTasks.size() == 0) {
             lblNoTasks.setVisibility(View.VISIBLE);
-            listTasks.setVisibility(View.GONE);
+            recyclerViewTasks.setVisibility(View.GONE);
         } else {
             lblNoTasks.setVisibility(View.GONE);
-            listTasks.setVisibility(View.VISIBLE);
+            recyclerViewTasks.setVisibility(View.VISIBLE);
             switch (sortMethod) {
                 case ALPHABETICAL:
-                    Collections.sort(tasks, new Task.TaskAZComparator());
+                    Collections.sort(mTasks, new Task.TaskAZComparator());
                     break;
                 case ALPHABETICAL_INVERTED:
-                    Collections.sort(tasks, new Task.TaskZAComparator());
+                    Collections.sort(mTasks, new Task.TaskZAComparator());
                     break;
                 case RECENT_FIRST:
-                    Collections.sort(tasks, new Task.TaskRecentComparator());
+                    Collections.sort(mTasks, new Task.TaskRecentComparator());
                     break;
                 case OLD_FIRST:
-                    Collections.sort(tasks, new Task.TaskOldComparator());
+                    Collections.sort(mTasks, new Task.TaskOldComparator());
                     break;
 
             }
-            adapter.updateTasks(tasks);
+            adapter.updateTasks(mTasks);
         }
     }
 
@@ -319,5 +335,20 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
          * No sort
          */
         NONE
+    }
+
+    private void retrieveTasks(){
+        mTaskRepository.retrieveTask().observe(this, new Observer<List<Task>>() {
+            @Override
+            public void onChanged(List<Task> tasks) {
+                if (mTasks.size()>0){
+                    mTasks.clear();
+                }
+                if (mTasks != null){
+                    mTasks.addAll(tasks);
+                }
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 }
