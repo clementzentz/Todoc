@@ -16,15 +16,13 @@ import java.util.Comparator;
  * @author Gaëtan HERFRAY
  */
 @Entity(tableName = "Task", foreignKeys = @ForeignKey(entity = Project.class,
-        parentColumns = "project_id",
+        parentColumns = "id",
         childColumns = "project_id"))
 public class Task {
     /**
      * The unique identifier of the task
      */
-    @NonNull
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "task_id", index = true)
     private long id;
 
     /**

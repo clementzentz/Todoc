@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     /**
      * List of all projects available in the application
      */
-    private final Project[] allProjects = Project.getAllProjects();
+    private final ArrayList<Project> allProjects = new ArrayList<>();
 
     /**
      * List of all current mTasks of the application
@@ -112,6 +112,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
         mTaskRepository = new TaskRepository(this);
         mProjectRepository = new ProjectRepository(this);
+        retrieveProjects();
         retrieveTasks();
 
         findViewById(R.id.fab_add_task).setOnClickListener(new View.OnClickListener() {
@@ -348,6 +349,20 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
                     mTasks.addAll(tasks);
                 }
                 adapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    private void retrieveProjects(){
+        mProjectRepository.retrieveProject().observe(this, new Observer<List<Project>>() {
+            @Override
+            public void onChanged(List<Project> projects) {
+                if (allProjects.size()>0){
+                    allProjects.clear();
+                }
+                if (allProjects != null){
+                    allProjects.addAll(projects);
+                }
             }
         });
     }

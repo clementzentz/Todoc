@@ -21,8 +21,8 @@ public interface ProjectDao {
     @Query("SELECT * FROM Project")
     LiveData<List<Project>> getProjects();
 
-//    @Query("SELECT * FROM Project WHERE project_id LIKE :id")
-//    List<Task> getProjectWithCustomQuery(int id);
+    @Query("SELECT * FROM Project WHERE id LIKE :id")
+    List<Project> getProjectWithCustomQuery(int id);
 
     @Delete
     int deleteProject(Project... projects);

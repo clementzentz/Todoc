@@ -20,8 +20,8 @@ public interface TaskDao {
     @Query("SELECT * FROM Task")
     LiveData<List<Task>> getTasks();
 
-    @Query("SELECT * FROM Task WHERE task_id LIKE :id")
-    List<Task> getTaskWithCustomQuery(int id);
+//    @Query("SELECT * FROM Task WHERE id LIKE :id")
+//    List<Task> getTaskWithCustomQuery(int id);
 
     @Delete
     int deleteTask(Task... tasks);

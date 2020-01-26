@@ -20,7 +20,6 @@ public class Project {
      * The unique identifier of the project
      */
     @PrimaryKey
-    @ColumnInfo(name = "project_id", index = true)
     private long id;
 
     /**
@@ -34,6 +33,7 @@ public class Project {
      * The hex (ARGB) code of the color associated to the project
      */
     @ColorInt
+    @ColumnInfo(name = "color")
     private final int color;
 
     /**
