@@ -1,4 +1,4 @@
-package com.cleanup.todoc.persistence;
+package com.cleanup.todoc.room;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -15,17 +15,20 @@ import java.util.List;
 public interface TaskDao {
 
     @Insert
-    long[] insertTask(Task... tasks);
+    long[] insert(Task... tasks);
 
-    @Query("SELECT * FROM Task")
+    @Query("SELECT * FROM task_table")
     LiveData<List<Task>> getTasks();
 
 //    @Query("SELECT * FROM Task WHERE id LIKE :id")
 //    List<Task> getTaskWithCustomQuery(int id);
 
+    @Query("DELETE FROM task_table")
+    void deleteAll();
+
     @Delete
-    int deleteTask(Task... tasks);
+    int delete(Task... tasks);
 
     @Update
-    int updateTask(Task... tasks);
+    int update(Task... tasks);
 }

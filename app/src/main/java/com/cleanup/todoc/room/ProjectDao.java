@@ -1,4 +1,4 @@
-package com.cleanup.todoc.persistence;
+package com.cleanup.todoc.room;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -8,7 +8,6 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import com.cleanup.todoc.model.Project;
-import com.cleanup.todoc.model.Task;
 
 import java.util.List;
 
@@ -16,17 +15,20 @@ import java.util.List;
 public interface ProjectDao {
 
     @Insert
-    long[] insertProject(Project... projects);
+    long[] insert(Project... projects);
 
-    @Query("SELECT * FROM Project")
+    @Query("SELECT * FROM project_table")
     LiveData<List<Project>> getProjects();
 
-    @Query("SELECT * FROM Project WHERE id LIKE :id")
+    @Query("SELECT * FROM project_table WHERE id LIKE :id")
     List<Project> getProjectWithCustomQuery(int id);
 
     @Delete
-    int deleteProject(Project... projects);
+    int delete(Project... projects);
+
+    @Query("DELETE FROM project_table")
+    void deleteAll();
 
     @Update
-    int updateProject(Project... projects);
+    int update(Project... projects);
 }

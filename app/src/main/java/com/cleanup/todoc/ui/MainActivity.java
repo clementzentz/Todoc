@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.Menu;
@@ -19,11 +20,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.cleanup.todoc.R;
-import com.cleanup.todoc.adapter.TasksAdapter;
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
-import com.cleanup.todoc.persistence.ProjectRepository;
-import com.cleanup.todoc.persistence.TaskRepository;
+import com.cleanup.todoc.viewModel.ProjectViewModel;
+import com.cleanup.todoc.viewModel.TaskViewModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,8 +38,8 @@ import java.util.List;
  */
 public class MainActivity extends AppCompatActivity implements TasksAdapter.DeleteTaskListener {
 
-    private TaskRepository mTaskRepository;
-    private ProjectRepository mProjectRepository;
+    private TaskViewModel mTaskViewModel;
+    private ProjectViewModel mProjectViewModel;
 
     /**
      * List of all projects available in the application
@@ -110,8 +110,8 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         recyclerViewTasks.setAdapter(adapter);
 
 
-        mTaskRepository = new TaskRepository(this);
-        mProjectRepository = new ProjectRepository(this);
+        mTaskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
+        mProjectViewModel = new ViewModelProvider(this).get(ProjectViewModel.class);
         retrieveProjects();
         retrieveTasks();
 
@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     @Override
     public void onDeleteTask(Task task) {
         mTasks.remove(task);
-        mTaskRepository.deleteTask(task);
+        mTaskViewModel.delete(task);
         updateTasks();
     }
 
@@ -225,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      */
     private void addTask(@NonNull Task task) {
         mTasks.add(task);
-        mTaskRepository.insertTask(task);
+        mTaskViewModel.insert(task);
         updateTasks();
     }
 
@@ -339,7 +339,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     }
 
     private void retrieveTasks(){
-        mTaskRepository.retrieveTask().observe(this, new Observer<List<Task>>() {
+        mTaskViewModel.getAllTasks().observe(this, new Observer<List<Task>>() {
             @Override
             public void onChanged(List<Task> tasks) {
                 if (mTasks.size()>0){
@@ -354,7 +354,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     }
 
     private void retrieveProjects(){
-        mProjectRepository.retrieveProject().observe(this, new Observer<List<Project>>() {
+        mProjectViewModel.getAllProjects().observe(this, new Observer<List<Project>>() {
             @Override
             public void onChanged(List<Project> projects) {
                 if (allProjects.size()>0){

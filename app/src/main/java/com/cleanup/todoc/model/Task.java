@@ -15,7 +15,7 @@ import java.util.Comparator;
  *
  * @author Gaëtan HERFRAY
  */
-@Entity(tableName = "Task", foreignKeys = @ForeignKey(entity = Project.class,
+@Entity(tableName = "task_table", foreignKeys = @ForeignKey(entity = Project.class,
         parentColumns = "id",
         childColumns = "project_id"))
 public class Task {
