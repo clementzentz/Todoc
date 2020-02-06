@@ -14,7 +14,7 @@ import com.cleanup.todoc.model.Task;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {Task.class, Project.class}, version = 7)
+@Database(entities = {Task.class, Project.class}, version = 8)
 public abstract class TodocDatabase extends RoomDatabase {
 
     private static final String DATABASE_NAME = "todoc_db";
@@ -46,21 +46,21 @@ public abstract class TodocDatabase extends RoomDatabase {
 
             // If you want to keep data through app restarts,
             // comment out the following block
-            databaseWriteExecutor.execute(() -> {
-                // Populate the database in the background.
-                // If you want to start with more words, just add them.
-                ProjectDao projectDao = INSTANCE.getProjectDao();
-                if (projectDao.getProjects().getValue() == null){
+            ProjectDao projectDao = INSTANCE.getProjectDao();
+            if (projectDao.getProjects() == null){
+                databaseWriteExecutor.execute(() -> {
+                    // Populate the database in the background.
+                    // If you want to start with more words, just add them.
                     Project[] projects = new Project[]{
                             new Project(1L, "Projet Tartampion", 0xFFEADAD1),
                             new Project(2L, "Projet Lucidia", 0xFFB4CDBA),
                             new Project(3L, "Projet Circus", 0xFFA3CED2),
                     };
-                    for (Project p : projects) {
-                        projectDao.insert(p);
+                    for (Project project : projects){
+                        projectDao.insert(project);
                     }
-                }
-            });
+                });
+            }
         }
     };
 

@@ -14,6 +14,7 @@ public class ProjectRepository {
 
     private ProjectDao mProjectDao;
     private LiveData<List<Project>> mAllProjects;
+    private Project mProjectById;
 
     public ProjectRepository(Application application) {
         TodocDatabase  db = TodocDatabase.getInstance(application);
@@ -41,5 +42,12 @@ public class ProjectRepository {
         TodocDatabase.databaseWriteExecutor.execute(() -> {
             mProjectDao.delete(project);
         });
+    }
+
+    public Project getProjectById(long id){
+        TodocDatabase.databaseWriteExecutor.execute(() -> {
+           mProjectById = mProjectDao.getProjectWithIdQuery(id);
+        });
+        return mProjectById;
     }
 }

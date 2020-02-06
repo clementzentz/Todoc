@@ -1,11 +1,9 @@
 package com.cleanup.todoc.model;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
-import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import java.util.Comparator;
@@ -29,7 +27,7 @@ public class Task {
      * The unique identifier of the project associated to the task
      */
     @ColumnInfo(name = "project_id", index = true)
-    public long projectId;
+    private long taskProjectId;
 
     /**
      * The name of the task
@@ -49,14 +47,12 @@ public class Task {
     /**
      * Instantiates a new Task.
      *
-     * @param id                the unique identifier of the task to set
-     * @param projectId         the unique identifier of the project associated to the task to set
+     * @param taskProjectId         the unique identifier of the project associated to the task to set
      * @param name              the name of the task to set
      * @param creationTimestamp the timestamp when the task has been created to set
      */
-    public Task(long id, long projectId, @NonNull String name, long creationTimestamp) {
-        this.setId(id);
-        this.setTaskProjectId(projectId);
+    public Task(long taskProjectId, @NonNull String name, long creationTimestamp) {
+        this.setTaskProjectId(taskProjectId);
         this.setName(name);
         this.setCreationTimestamp(creationTimestamp);
     }
@@ -79,8 +75,8 @@ public class Task {
         this.id = id;
     }
 
-    public long gettaskProject_id(){
-        return projectId;
+    public long getTaskProjectId(){
+        return taskProjectId;
     }
 
     /**
@@ -89,18 +85,18 @@ public class Task {
      * @param projectId the unique identifier of the project associated to the task to set
      */
     public void setTaskProjectId(long projectId) {
-        this.projectId = projectId;
+        this.taskProjectId = projectId;
     }
 
-    /**
-     * Returns the project associated to the task.
-     *
-     * @return the project associated to the task
-     */
-    @Nullable
-    public Project callGetProjectById() {
-        return Project.getProjectById(projectId);
-    }
+//    /**
+//     * Returns the project associated to the task.
+//     *
+//     * @return the project associated to the task
+//     */
+//    @Nullable
+//    public Project callGetProjectById() {
+//        return Project.getTaskProjectId(taskProjectId);
+//    }
 
     /**
      * Returns the name of the task.

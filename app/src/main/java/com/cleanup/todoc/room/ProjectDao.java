@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -14,14 +15,14 @@ import java.util.List;
 @Dao
 public interface ProjectDao {
 
-    @Insert
-    long[] insert(Project... projects);
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    void insert(Project project);
 
     @Query("SELECT * FROM project_table")
     LiveData<List<Project>> getProjects();
 
     @Query("SELECT * FROM project_table WHERE id LIKE :id")
-    List<Project> getProjectWithCustomQuery(int id);
+    Project getProjectWithIdQuery(long id);
 
     @Delete
     int delete(Project... projects);

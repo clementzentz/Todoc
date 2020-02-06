@@ -38,4 +38,8 @@ public class ProjectViewModel extends AndroidViewModel {
     public void update(Project task){
         mProjectRepository.updateProject(task);
     }
+
+    public Project getProjectById(long id){
+        return mProjectRepository.getProjectById(id);
+    }
 }
