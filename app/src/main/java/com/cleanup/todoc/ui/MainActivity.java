@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +23,7 @@ import android.widget.TextView;
 import com.cleanup.todoc.R;
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
+import com.cleanup.todoc.model.TaskAndProject;
 import com.cleanup.todoc.viewModel.ProjectViewModel;
 import com.cleanup.todoc.viewModel.TaskViewModel;
 
@@ -36,6 +39,8 @@ import java.util.Date;
  */
 public class MainActivity extends AppCompatActivity implements TasksAdapter.DeleteTaskListener {
 
+    private static final String TAG = "MainActivity";
+
     private TaskViewModel mTaskViewModel;
     private ProjectViewModel mProjectViewModel;
 
@@ -48,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * List of all current mTasks of the application
      */
     @NonNull
-    private final ArrayList<Task> mTasks = new ArrayList<>();
+    private final ArrayList<TaskAndProject> mTasks = new ArrayList<>();
 
     /**
      * The adapter which handles the list of mTasks
@@ -114,12 +119,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         retrieveProjects();
         retrieveTasks();
 
-        findViewById(R.id.fab_add_task).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showAddTaskDialog();
-            }
-        });
+        findViewById(R.id.fab_add_task).setOnClickListener(view -> showAddTaskDialog());
     }
 
     @Override
@@ -149,7 +149,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
     @Override
     public void onDeleteTask(Task task) {
-        mTasks.remove(task);
         mTaskViewModel.delete(task);
         updateTasks();
     }
@@ -179,12 +178,16 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             else if (taskProject != null) {
 
                 Task task = new Task(
-                        taskProject.getId(),
+                        taskProject.getProject_id(),
                         taskName,
                         new Date().getTime()
                 );
+                TaskAndProject taskAndProject = new TaskAndProject();
 
-                addTask(task);
+                taskAndProject.setTask(task);
+                taskAndProject.setProject(taskProject);
+
+                addTask(taskAndProject);
 
                 dialogInterface.dismiss();
             }
@@ -218,9 +221,9 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      *
      * @param task the task to be added to the list
      */
-    private void addTask(@NonNull Task task) {
+    private void addTask(@NonNull TaskAndProject task) {
         mTasks.add(task);
-        mTaskViewModel.insert(task);
+        mTaskViewModel.insert(task.getTask());
         updateTasks();
     }
 
@@ -247,10 +250,9 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
                 case OLD_FIRST:
                     Collections.sort(mTasks, new Task.TaskOldComparator());
                     break;
-
             }
-            adapter.updateTasks(mTasks);
         }
+        adapter.setTasks(mTasks);
     }
 
     /**
@@ -339,6 +341,11 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             }
             if (allProjects != null){
                 allProjects.addAll(projects);
+                for (Project p :
+                        allProjects) {
+                    Log.d(TAG, "retrieveProjects: projet "+p.getProject_id()+" = "+p.getName());
+                }
+
             }
         });
     }

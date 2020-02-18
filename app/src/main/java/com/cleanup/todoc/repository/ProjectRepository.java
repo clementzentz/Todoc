@@ -27,27 +27,19 @@ public class ProjectRepository {
     }
 
     public void insertProject(Project project){
-        TodocDatabase.databaseWriteExecutor.execute(() -> {
-            mProjectDao.insert(project);
-        });
+        TodocDatabase.databaseWriteExecutor.execute(() -> mProjectDao.insert(project));
     }
 
     public void updateProject(Project project){
-        TodocDatabase.databaseWriteExecutor.execute(() -> {
-            mProjectDao.update(project);
-        });
+        TodocDatabase.databaseWriteExecutor.execute(() -> mProjectDao.update(project));
     }
 
     public void deleteProject(Project project){
-        TodocDatabase.databaseWriteExecutor.execute(() -> {
-            mProjectDao.delete(project);
-        });
+        TodocDatabase.databaseWriteExecutor.execute(() -> mProjectDao.delete(project));
     }
 
     public Project getProjectById(long id){
-        TodocDatabase.databaseWriteExecutor.execute(() -> {
-           mProjectById = mProjectDao.getProjectWithIdQuery(id);
-        });
+        TodocDatabase.databaseWriteExecutor.execute(() -> mProjectById = mProjectDao.getProjectWithIdQuery(id));
         return mProjectById;
     }
 }

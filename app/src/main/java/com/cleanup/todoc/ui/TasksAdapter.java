@@ -4,6 +4,8 @@ import android.content.res.ColorStateList;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +14,13 @@ import android.widget.TextView;
 import com.cleanup.todoc.R;
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
+import com.cleanup.todoc.model.TaskAndProject;
 import com.cleanup.todoc.viewModel.ProjectViewModel;
 
 import java.util.List;
 
 /**
- * <p>Adapter which handles the list of tasks to display in the dedicated RecyclerView.</p>
+ * <p>Adapter which handles the list of mTasks to display in the dedicated RecyclerView.</p>
  *
  * @author Gaëtan HERFRAY
  */
@@ -25,11 +28,13 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
 
     private ProjectViewModel mProjectViewModel;
 
+    private static final String TAG = "TasksAdapter";
+
     /**
-     * The list of tasks the adapter deals with
+     * The list of mTasks the adapter deals with
      */
     @NonNull
-    private List<Task> tasks;
+    private List<TaskAndProject> mTasks;
 
     /**
      * The listener for when a task needs to be deleted
@@ -40,21 +45,21 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
     /**
      * Instantiates a new TasksAdapter.
      *
-     * @param tasks the list of tasks the adapter deals with to set
+     * @param tasks the list of mTasks the adapter deals with to set
      */
-    public TasksAdapter(@NonNull final List<Task> tasks, @NonNull final DeleteTaskListener deleteTaskListener, ProjectViewModel projectViewModel) {
-        this.tasks = tasks;
+    public TasksAdapter(@NonNull final List<TaskAndProject> tasks, @NonNull final DeleteTaskListener deleteTaskListener, ProjectViewModel projectViewModel) {
+        this.mTasks = tasks;
         this.deleteTaskListener = deleteTaskListener;
         this.mProjectViewModel = projectViewModel;
     }
 
     /**
-     * Updates the list of tasks the adapter deals with.
+     * Set the list of mTasks the adapter deals with.
      *
-     * @param tasks the list of tasks the adapter deals with to set
+     * @param tasks the list of mTasks the adapter deals with to set
      */
-    public void updateTasks(@NonNull final List<Task> tasks) {
-        this.tasks = tasks;
+    public void setTasks(List<TaskAndProject> tasks) {
+        mTasks = tasks;
         notifyDataSetChanged();
     }
 
@@ -67,16 +72,16 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
 
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder taskViewHolder, int position) {
-        taskViewHolder.bind(tasks.get(position));
+        taskViewHolder.bind(mTasks.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return tasks.size();
+        return mTasks.size();
     }
 
     /**
-     * Listener for deleting tasks
+     * Listener for deleting mTasks
      */
     public interface DeleteTaskListener {
         /**
@@ -88,7 +93,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
     }
 
     /**
-     * <p>ViewHolder for task items in the tasks list</p>
+     * <p>ViewHolder for task items in the mTasks list</p>
      *
      * @author Gaëtan HERFRAY
      */
@@ -145,13 +150,13 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         /**
          * Binds a task to the item view.
          *
-         * @param task the task to bind in the item view
+         * @param taskAndProject the task to bind in the item view
          */
-        void bind(Task task) {
-            lblTaskName.setText(task.getName());
-            imgDelete.setTag(task);
+        void bind(TaskAndProject taskAndProject) {
+            Project taskProject = taskAndProject.getProject();
+            lblTaskName.setText(taskAndProject.getTask().getName());
+            imgDelete.setTag(taskAndProject);
 
-            Project taskProject = mProjectViewModel.getProjectById(task.getTaskProjectId());
             if (taskProject != null) {
                 imgProject.setSupportImageTintList(ColorStateList.valueOf(taskProject.getColor()));
                 lblProjectName.setText(taskProject.getName());

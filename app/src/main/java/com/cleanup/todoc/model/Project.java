@@ -18,13 +18,13 @@ public class Project {
      * The unique identifier of the project
      */
     @PrimaryKey
-    private long id;
+    private long project_id;
 
     /**
      * The name of the project
      */
     @NonNull
-    @ColumnInfo(name = "name")
+    @ColumnInfo(name = "project_name")
     private final String name;
 
     /**
@@ -37,12 +37,12 @@ public class Project {
     /**
      * Instantiates a new Project.
      *
-     * @param id    the unique identifier of the project to set
+     * @param project_id    the unique identifier of the project to set
      * @param name  the name of the project to set
      * @param color the hex (ARGB) code of the color associated to the project to set
      */
-    public Project(long id, @NonNull String name, @ColorInt int color) {
-        this.id = id;
+    public Project(long project_id, @NonNull String name, @ColorInt int color) {
+        this.project_id = project_id;
         this.name = name;
         this.color = color;
     }
@@ -82,8 +82,8 @@ public class Project {
      *
      * @return the unique identifier of the project
      */
-    public long getId() {
-        return id;
+    public long getProject_id() {
+        return project_id;
     }
 
 

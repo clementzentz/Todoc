@@ -1,6 +1,7 @@
 package com.cleanup.todoc.room;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.room.Database;
@@ -14,8 +15,10 @@ import com.cleanup.todoc.model.Task;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {Task.class, Project.class}, version = 8)
+@Database(entities = {Task.class, Project.class}, version = 9)
 public abstract class TodocDatabase extends RoomDatabase {
+
+    private static final String TAG = "TodocDatabase";
 
     private static final String DATABASE_NAME = "todoc_db";
 
@@ -46,21 +49,27 @@ public abstract class TodocDatabase extends RoomDatabase {
 
             // If you want to keep data through app restarts,
             // comment out the following block
+
+            /*TaskDao taskDao = INSTANCE.getTaskDao();*/
             ProjectDao projectDao = INSTANCE.getProjectDao();
-            if (projectDao.getProjects() == null){
+            /*taskDao.deleteAll();*/
+            /*projectDao.deleteAll();*/
+
                 databaseWriteExecutor.execute(() -> {
                     // Populate the database in the background.
                     // If you want to start with more words, just add them.
-                    Project[] projects = new Project[]{
-                            new Project(1L, "Projet Tartampion", 0xFFEADAD1),
-                            new Project(2L, "Projet Lucidia", 0xFFB4CDBA),
-                            new Project(3L, "Projet Circus", 0xFFA3CED2),
-                    };
-                    for (Project project : projects){
-                        projectDao.insert(project);
+                    if (projectDao.getProjects() == null) {
+                        Project[] projects = new Project[]{
+                                new Project(1L, "Projet Tartampion", 0xFFEADAD1),
+                                new Project(2L, "Projet Lucidia", 0xFFB4CDBA),
+                                new Project(3L, "Projet Circus", 0xFFA3CED2),
+                        };
+                        for (Project project : projects) {
+                            Log.d(TAG, "onOpen: insert project "+project.getName()+" in db.");
+                            projectDao.insert(project);
+                        }
                     }
                 });
-            }
         }
     };
 
