@@ -24,6 +24,7 @@ import com.cleanup.todoc.R;
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
 import com.cleanup.todoc.model.TaskAndProject;
+import com.cleanup.todoc.util.MainActivityToAdapter;
 import com.cleanup.todoc.viewModel.ProjectViewModel;
 import com.cleanup.todoc.viewModel.TaskViewModel;
 
@@ -37,7 +38,7 @@ import java.util.Date;
  *
  * @author Gaëtan HERFRAY
  */
-public class MainActivity extends AppCompatActivity implements TasksAdapter.DeleteTaskListener {
+public class MainActivity extends AppCompatActivity implements TasksAdapter.DeleteTaskListener, MainActivityToAdapter {
 
     private static final String TAG = "MainActivity";
 
@@ -113,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         lblNoTasks = findViewById(R.id.lbl_no_task);
 
         recyclerViewTasks.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        adapter = new TasksAdapter(mTasks, this, mProjectViewModel);
+        adapter = new TasksAdapter(mTasks, this);
         recyclerViewTasks.setAdapter(adapter);
 
         retrieveProjects();
@@ -142,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             sortMethod = SortMethod.RECENT_FIRST;
         }
 
-        updateTasks();
+        updateTasksAdapter();
 
         return super.onOptionsItemSelected(item);
     }
@@ -150,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     @Override
     public void onDeleteTask(Task task) {
         mTaskViewModel.delete(task);
-        updateTasks();
+        updateTasksAdapter();
     }
 
     /**
@@ -224,13 +225,13 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     private void addTask(@NonNull TaskAndProject task) {
         mTasks.add(task);
         mTaskViewModel.insert(task.getTask());
-        updateTasks();
+        updateTasksAdapter();
     }
 
     /**
      * Updates the list of mTasks in the UI
      */
-    private void updateTasks() {
+    private void updateTasksAdapter() {
         if (mTasks.size() == 0) {
             lblNoTasks.setVisibility(View.VISIBLE);
             recyclerViewTasks.setVisibility(View.GONE);
@@ -294,6 +295,11 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         if (dialogSpinner != null) {
             dialogSpinner.setAdapter(adapter);
         }
+    }
+
+    @Override
+    public void launchInputTaskDialog(Task task) {
+
     }
 
     /**

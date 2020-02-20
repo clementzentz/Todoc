@@ -12,6 +12,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
 
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -58,7 +59,8 @@ public abstract class TodocDatabase extends RoomDatabase {
                 databaseWriteExecutor.execute(() -> {
                     // Populate the database in the background.
                     // If you want to start with more words, just add them.
-                    if (projectDao.getProjects() == null) {
+                    List<Project> projectsSync = projectDao.getProjectsSync();
+                    if (projectsSync == null || projectsSync.isEmpty()) {
                         Project[] projects = new Project[]{
                                 new Project(1L, "Projet Tartampion", 0xFFEADAD1),
                                 new Project(2L, "Projet Lucidia", 0xFFB4CDBA),
