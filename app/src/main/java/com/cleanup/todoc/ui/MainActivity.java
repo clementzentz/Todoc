@@ -306,7 +306,16 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         Task task = taskAndProject.getTask();
         alertBuilderManageTask.setTitle("Modifier la tâche : ");
         alertBuilderManageTask.setView(R.layout.dialog_add_task);
-        alertBuilderManageTask.setPositiveButton("mettre à jours", null);
+        alertBuilderManageTask.setPositiveButton("mettre à jours", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                task.setName(dialogEditText.getText().toString());
+                Project project = (Project) dialogSpinner.getSelectedItem();
+                task.setTaskProjectId(project.getProject_id());
+                mTaskViewModel.update(task);
+                retrieveTasks();
+            }
+        });
         alertBuilderManageTask.setOnDismissListener(dialogInterface -> {
             dialogEditText = null;
             dialogSpinner = null;
@@ -327,17 +336,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
                 dialogSpinner.setSelection(index);
             }
         }
-
-        dialogManageTask.setOnShowListener(dialogInterface -> {
-            Button button = dialogManageTask.getButton(AlertDialog.BUTTON_POSITIVE);
-            button.setOnClickListener(v -> {
-                task.setName(dialogEditText.getText().toString());
-                task.setTaskProjectId((int)dialogSpinner.getSelectedItem());
-                mTaskViewModel.update(task);
-                retrieveTasks();
-                dialogManageTask.dismiss();
-            });
-        });
     }
 
     /**
