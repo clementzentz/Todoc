@@ -51,10 +51,7 @@ public abstract class TodocDatabase extends RoomDatabase {
             // If you want to keep data through app restarts,
             // comment out the following block
 
-            /*TaskDao taskDao = INSTANCE.getTaskDao();*/
             ProjectDao projectDao = INSTANCE.getProjectDao();
-            /*taskDao.deleteAll();*/
-            /*projectDao.deleteAll();*/
 
                 databaseWriteExecutor.execute(() -> {
                     // Populate the database in the background.

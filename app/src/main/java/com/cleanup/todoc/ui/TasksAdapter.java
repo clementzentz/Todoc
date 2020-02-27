@@ -15,6 +15,7 @@ import com.cleanup.todoc.R;
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
 import com.cleanup.todoc.model.TaskAndProject;
+import com.cleanup.todoc.util.MainActivityToAdapter;
 
 import java.util.List;
 
@@ -28,6 +29,8 @@ import butterknife.ButterKnife;
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHolder> {
 
     private static final String TAG = "TasksAdapter";
+
+    private MainActivityToAdapter mMainActivityToAdapter;
 
     /**
      * The list of mTasks the adapter deals with
@@ -45,10 +48,12 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
      *
      * @param tasks the list of mTasks the adapter deals with to set
      */
-    public TasksAdapter(@NonNull final List<TaskAndProject> tasks,
-                        @NonNull final DeleteTaskListener deleteTaskListener) {
+    TasksAdapter(@NonNull final List<TaskAndProject> tasks,
+                 @NonNull final DeleteTaskListener deleteTaskListener,
+                 @NonNull MainActivityToAdapter mainActivityToAdapter) {
         this.mTasks = tasks;
         this.mDeleteTaskListener = deleteTaskListener;
+        this.mMainActivityToAdapter = mainActivityToAdapter;
     }
 
     /**
@@ -56,7 +61,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
      *
      * @param tasks the list of mTasks the adapter deals with to set
      */
-    public void setTasks(List<TaskAndProject> tasks) {
+    void setTasks(List<TaskAndProject> tasks) {
         mTasks = tasks;
         notifyDataSetChanged();
     }
@@ -72,7 +77,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
     public void onBindViewHolder(@NonNull TaskViewHolder taskViewHolder, int position) {
         taskViewHolder.bind(mTasks.get(position));
         taskViewHolder.mView.setOnClickListener(v -> {
-
+            mMainActivityToAdapter.launchInputTaskDialog(mTasks.get(position));
         });
     }
 

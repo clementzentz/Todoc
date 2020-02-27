@@ -73,6 +73,9 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     @Nullable
     public AlertDialog dialog = null;
 
+    @Nullable
+    public AlertDialog dialogManageTask = null;
+
     /**
      * EditText that allows user to set the name of a task
      */
@@ -114,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         lblNoTasks = findViewById(R.id.lbl_no_task);
 
         recyclerViewTasks.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        adapter = new TasksAdapter(mTasks, this);
+        adapter = new TasksAdapter(mTasks, this, this);
         recyclerViewTasks.setAdapter(adapter);
 
         retrieveProjects();
@@ -220,11 +223,11 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     /**
      * Adds the given task to the list of created mTasks.
      *
-     * @param task the task to be added to the list
+     * @param taskAndProject the task to be added to the list
      */
-    private void addTask(@NonNull TaskAndProject task) {
-        mTasks.add(task);
-        mTaskViewModel.insert(task.getTask());
+    private void addTask(@NonNull TaskAndProject taskAndProject) {
+        mTasks.add(taskAndProject);
+        mTaskViewModel.insert(taskAndProject.getTask());
         updateTasksAdapter();
     }
 
@@ -298,8 +301,43 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     }
 
     @Override
-    public void launchInputTaskDialog(Task task) {
+    public void launchInputTaskDialog(TaskAndProject taskAndProject) {
+        final AlertDialog.Builder alertBuilderManageTask = new AlertDialog.Builder(this, R.style.Dialog);
+        Task task = taskAndProject.getTask();
+        alertBuilderManageTask.setTitle("Modifier la tâche : ");
+        alertBuilderManageTask.setView(R.layout.dialog_add_task);
+        alertBuilderManageTask.setPositiveButton("mettre à jours", null);
+        alertBuilderManageTask.setOnDismissListener(dialogInterface -> {
+            dialogEditText = null;
+            dialogSpinner = null;
+            dialog = null;
+        });
 
+        dialogManageTask = alertBuilderManageTask.create();
+
+        dialogManageTask.show();
+
+        dialogEditText = dialogManageTask.findViewById(R.id.txt_task_name);
+        dialogSpinner = dialogManageTask.findViewById(R.id.project_spinner);
+        populateDialogSpinner();
+
+        dialogEditText.setText(task.getName());
+        for (int index = 0; index < dialogSpinner.getAdapter().getCount(); index++){
+            if (dialogSpinner.getAdapter().getItem(index).equals(taskAndProject.getProject())){
+                dialogSpinner.setSelection(index);
+            }
+        }
+
+        dialogManageTask.setOnShowListener(dialogInterface -> {
+            Button button = dialogManageTask.getButton(AlertDialog.BUTTON_POSITIVE);
+            button.setOnClickListener(v -> {
+                task.setName(dialogEditText.getText().toString());
+                task.setTaskProjectId((int)dialogSpinner.getSelectedItem());
+                mTaskViewModel.update(task);
+                retrieveTasks();
+                dialogManageTask.dismiss();
+            });
+        });
     }
 
     /**

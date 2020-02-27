@@ -1,7 +1,7 @@
 package com.cleanup.todoc.util;
 
-import com.cleanup.todoc.model.Task;
+import com.cleanup.todoc.model.TaskAndProject;
 
 public interface MainActivityToAdapter {
-    void launchInputTaskDialog(Task task);
+    void launchInputTaskDialog(TaskAndProject taskAndProject);
 }
