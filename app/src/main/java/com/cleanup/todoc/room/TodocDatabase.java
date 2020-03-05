@@ -52,11 +52,14 @@ public abstract class TodocDatabase extends RoomDatabase {
             // comment out the following block
 
             ProjectDao projectDao = INSTANCE.getProjectDao();
+            TaskDao taskDao = INSTANCE.getTaskDao();
 
                 databaseWriteExecutor.execute(() -> {
                     // Populate the database in the background.
                     // If you want to start with more words, just add them.
                     List<Project> projectsSync = projectDao.getProjectsSync();
+                    List<Task> tasksSync = taskDao.getTasks().getValue();
+
                     if (projectsSync == null || projectsSync.isEmpty()) {
                         Project[] projects = new Project[]{
                                 new Project(1L, "Projet Tartampion", 0xFFEADAD1),
@@ -67,6 +70,8 @@ public abstract class TodocDatabase extends RoomDatabase {
                             Log.d(TAG, "onOpen: insert project "+project.getName()+" in db.");
                             projectDao.insert(project);
                         }
+                    }if ((tasksSync == null) || tasksSync.isEmpty()){
+
                     }
                 });
         }

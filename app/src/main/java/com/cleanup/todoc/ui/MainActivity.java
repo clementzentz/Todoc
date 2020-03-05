@@ -31,6 +31,7 @@ import com.cleanup.todoc.viewModel.TaskViewModel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * <p>Home activity of the application which is displayed when the user opens the app.</p>
@@ -154,7 +155,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     @Override
     public void onDeleteTask(Task task) {
         mTaskViewModel.delete(task);
-        updateTasksAdapter();
     }
 
     /**
@@ -226,9 +226,8 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * @param taskAndProject the task to be added to the list
      */
     private void addTask(@NonNull TaskAndProject taskAndProject) {
-        mTasks.add(taskAndProject);
         mTaskViewModel.insert(taskAndProject.getTask());
-        updateTasksAdapter();
+        lblNoTasks.setVisibility(View.GONE);
     }
 
     /**
@@ -306,15 +305,11 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         Task task = taskAndProject.getTask();
         alertBuilderManageTask.setTitle("Modifier la tâche : ");
         alertBuilderManageTask.setView(R.layout.dialog_add_task);
-        alertBuilderManageTask.setPositiveButton("mettre à jours", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                task.setName(dialogEditText.getText().toString());
-                Project project = (Project) dialogSpinner.getSelectedItem();
-                task.setTaskProjectId(project.getProject_id());
-                mTaskViewModel.update(task);
-                retrieveTasks();
-            }
+        alertBuilderManageTask.setPositiveButton("mettre à jours", (dialog, which) -> {
+            task.setName(Objects.requireNonNull(dialogEditText).getText().toString());
+            Project project = (Project) Objects.requireNonNull(dialogSpinner).getSelectedItem();
+            task.setTaskProjectId(project.getProject_id());
+            mTaskViewModel.update(task);
         });
         alertBuilderManageTask.setOnDismissListener(dialogInterface -> {
             dialogEditText = null;
@@ -330,8 +325,8 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         dialogSpinner = dialogManageTask.findViewById(R.id.project_spinner);
         populateDialogSpinner();
 
-        dialogEditText.setText(task.getName());
-        for (int index = 0; index < dialogSpinner.getAdapter().getCount(); index++){
+        Objects.requireNonNull(dialogEditText).setText(task.getName());
+        for (int index = 0; index < Objects.requireNonNull(dialogSpinner).getAdapter().getCount(); index++){
             if (dialogSpinner.getAdapter().getItem(index).equals(taskAndProject.getProject())){
                 dialogSpinner.setSelection(index);
             }
@@ -369,9 +364,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             if (mTasks.size()>0){
                 mTasks.clear();
             }
-            if (mTasks != null){
-                mTasks.addAll(tasks);
-            }
+            mTasks.addAll(tasks);
             adapter.notifyDataSetChanged();
         });
     }
@@ -381,13 +374,10 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             if (allProjects.size()>0){
                 allProjects.clear();
             }
-            if (allProjects != null){
-                allProjects.addAll(projects);
-                for (Project p :
-                        allProjects) {
-                    Log.d(TAG, "retrieveProjects: projet "+p.getProject_id()+" = "+p.getName());
-                }
-
+            allProjects.addAll(projects);
+            for (Project p :
+                    allProjects) {
+                Log.d(TAG, "retrieveProjects: projet "+p.getProject_id()+" = "+p.getName());
             }
         });
     }

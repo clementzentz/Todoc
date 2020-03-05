@@ -1,4 +1,4 @@
-package com.cleanup.todoc;
+package com.cleanup.todoc.ui;
 
 import android.content.Context;
 
@@ -8,14 +8,22 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.cleanup.todoc.model.Task;
+import com.cleanup.todoc.model.TaskAndProject;
 import com.cleanup.todoc.room.TaskDao;
 import com.cleanup.todoc.room.TodocDatabase;
+import com.cleanup.todoc.util.LiveDataTestUtil;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.Date;
+import java.util.List;
+
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
 public class TodocDatabaseTest {
@@ -47,31 +55,36 @@ public class TodocDatabaseTest {
 
     @Test
     public void insertAndGetWord() throws Exception {
-        Word word = new Word("word");
-        mWordDao.insert(word);
-        List<Word> allWords = LiveDataTestUtil.getValue(mWordDao.getAlphabetizedWords());
-        assertEquals(allWords.get(0).getWord(), word.getWord());
+        Task task = new Task(1L,"aaa", new Date().getTime());
+        mTaskDao.insert(task);
+        List<Task> allTasks = LiveDataTestUtil.getValue(mTaskDao.getTasks());
+        assertEquals(allTasks.get(0), task);
+        mTaskDao.delete(task);
     }
 
     @Test
     public void getAllWords() throws Exception {
-        Word word = new Word("aaa");
-        mWordDao.insert(word);
-        Word word2 = new Word("bbb");
-        mWordDao.insert(word2);
-        List<Word> allWords = LiveDataTestUtil.getValue(mWordDao.getAlphabetizedWords());
-        assertEquals(allWords.get(0).getWord(), word.getWord());
-        assertEquals(allWords.get(1).getWord(), word2.getWord());
+        Task task0 = new Task(1L,"aaa", new Date().getTime());
+        mTaskDao.insert(task0);
+        Task task1 = new Task(2L,"bbb", new Date().getTime());
+        mTaskDao.insert(task1);
+        List<TaskAndProject> allTasks = LiveDataTestUtil.getValue(mTaskDao.getTasksWithProject());
+        assertEquals(allTasks.get(0).getTask().getName(), task0.getName());
+        assertEquals(allTasks.get(1).getTask().getName(), task1.getName());
+        mTaskDao.delete(task0);
+        mTaskDao.delete(task1);
     }
 
     @Test
     public void deleteAll() throws Exception {
-        Task word = new Task(11, "aaa", );
-        mWordDao.insert(word);
-        Word word2 = new Word("word2");
-        mWordDao.insert(word2);
-        mWordDao.deleteAll();
-        List<Word> allWords = LiveDataTestUtil.getValue(mWordDao.getAlphabetizedWords());
-        assertTrue(allWords.isEmpty());
+        Task task0 = new Task(1L, "aaa", new Date().getTime());
+        mTaskDao.insert(task0);
+        Task task1 = new Task(2L,"word2", new Date().getTime());
+        mTaskDao.insert(task1);
+        mTaskDao.deleteAll();
+        List<TaskAndProject> allTasks = LiveDataTestUtil.getValue(mTaskDao.getTasksWithProject());
+        assertTrue(allTasks.isEmpty());
+        mTaskDao.delete(task0);
+        mTaskDao.delete(task1);
     }
 }

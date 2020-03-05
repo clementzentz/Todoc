@@ -76,9 +76,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder taskViewHolder, int position) {
         taskViewHolder.bind(mTasks.get(position));
-        taskViewHolder.mView.setOnClickListener(v -> {
-            mMainActivityToAdapter.launchInputTaskDialog(mTasks.get(position));
-        });
+        taskViewHolder.mView.setOnClickListener(v -> mMainActivityToAdapter.launchInputTaskDialog(mTasks.get(position)));
     }
 
     @Override
@@ -103,7 +101,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
      *
      * @author Gaëtan HERFRAY
      */
-    class TaskViewHolder extends RecyclerView.ViewHolder {
+    static class TaskViewHolder extends RecyclerView.ViewHolder {
         /**
          * The circle icon showing the color of the project
          */

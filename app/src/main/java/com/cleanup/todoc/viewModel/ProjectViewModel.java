@@ -39,7 +39,7 @@ public class ProjectViewModel extends AndroidViewModel {
         mProjectRepository.updateProject(task);
     }
 
-    public Project getProjectById(long id){
+/*    public Project getProjectById(long id){
         return mProjectRepository.getProjectById(id);
-    }
+    }*/
 }
