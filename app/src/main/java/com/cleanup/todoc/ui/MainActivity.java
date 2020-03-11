@@ -365,7 +365,8 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
                 mTasks.clear();
             }
             mTasks.addAll(tasks);
-            adapter.notifyDataSetChanged();
+            /*adapter.notifyDataSetChanged();*/
+            updateTasksAdapter();
         });
     }
 

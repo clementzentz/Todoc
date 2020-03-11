@@ -1,4 +1,4 @@
-package com.cleanup.todoc;
+package com.cleanup.todoc.ui;
 
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.cleanup.todoc.R;
 import com.cleanup.todoc.ui.MainActivity;
 
 import org.junit.Rule;
@@ -29,16 +30,17 @@ import static org.junit.Assert.assertThat;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 @RunWith(AndroidJUnit4.class)
-public class MainActivityInstrumentedTest {
+public class MainActivityTest {
     @Rule
     public ActivityTestRule<MainActivity> rule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void addAndRemoveTask() {
+    public void addUpdateAndRemoveTask() {
         MainActivity activity = rule.getActivity();
         TextView lblNoTask = activity.findViewById(R.id.lbl_no_task);
         RecyclerView listTasks = activity.findViewById(R.id.list_tasks);
 
+        // add task
         onView(withId(R.id.fab_add_task)).perform(click());
         onView(withId(R.id.txt_task_name)).perform(replaceText("Tâche example"));
         onView(withId(android.R.id.button1)).perform(click());
@@ -50,6 +52,15 @@ public class MainActivityInstrumentedTest {
         // Check that it contains one element only
         assertThat(listTasks.getAdapter().getItemCount(), equalTo(1));
 
+        // update task
+        onView(withRecyclerView(R.id.list_tasks).atPosition(0)).perform(click());
+        onView(withId(R.id.txt_task_name)).perform(replaceText("Tâche example update"));
+        onView(withId(android.R.id.button1)).perform(click());
+        onView(withRecyclerView(R.id.list_tasks).atPosition(0)).perform(click());
+        onView(withId(R.id.txt_task_name)).check(matches(withText("Tâche example update")));
+        onView(withId(android.R.id.button1)).perform(click());
+
+        // remove task
         onView(withId(R.id.img_delete)).perform(click());
 
         // Check that lblTask is displayed

@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.Comparator;
@@ -57,6 +58,13 @@ public class Task {
         this.setCreationTimestamp(creationTimestamp);
     }
 
+    @Ignore
+    public Task(Task task){
+        taskProjectId = task.getTaskProjectId();
+        name = task.getName();
+        creationTimestamp = task.getTimestamp();
+    }
+
     /**
      * Returns the unique identifier of the task.
      *
@@ -88,16 +96,6 @@ public class Task {
         this.taskProjectId = projectId;
     }
 
-//    /**
-//     * Returns the project associated to the task.
-//     *
-//     * @return the project associated to the task
-//     */
-//    @Nullable
-//    public Project callGetProjectById() {
-//        return Project.getTaskProjectId(taskProjectId);
-//    }
-
     /**
      * Returns the name of the task.
      *
@@ -124,6 +122,10 @@ public class Task {
      */
     public void setCreationTimestamp(long creationTimestamp) {
         this.creationTimestamp = creationTimestamp;
+    }
+
+    public long getTimestamp(){
+        return creationTimestamp;
     }
 
     /**

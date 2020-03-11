@@ -29,8 +29,8 @@ public interface ProjectDao {
     @Delete
     int delete(Project... projects);
 
-    @Query("DELETE FROM project_table")
-    void deleteAll();
+    /*@Query("DELETE FROM project_table")
+    void deleteAll();*/
 
     @Update
     int update(Project... projects);

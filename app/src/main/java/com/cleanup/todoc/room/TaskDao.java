@@ -24,8 +24,8 @@ public interface TaskDao {
 /*    @Query("SELECT * FROM Task WHERE id LIKE :id")
     List<Task> getTaskWithCustomQuery(int id);*/
 
-    @Query("DELETE FROM task_table")
-    void deleteAll();
+    /*@Query("DELETE FROM task_table")
+    void deleteAll();*/
 
     @Insert
     void insert(Task task);
