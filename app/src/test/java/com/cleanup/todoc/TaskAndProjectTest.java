@@ -4,6 +4,7 @@ import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
 import com.cleanup.todoc.model.TaskAndProject;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import static org.junit.Assert.assertSame;
  * @author Gaëtan HERFRAY
  */
 public class TaskAndProjectTest {
+
     @Test
     public void test_projects() {
         final Task task1 = new Task(1L, "aaa", new Date().getTime());
@@ -28,8 +30,8 @@ public class TaskAndProjectTest {
         final Task task4 = new Task(4L,"ddd", new Date().getTime());
 
         Project project1 = new Project(1L, "Projet Tartampion", 1);
-        Project project2 = new Project(1L, "Projet Lucidia", 2);
-        Project project3 = new Project(1L, "Projet Circus", 3);
+        Project project2 = new Project(2L, "Projet Lucidia", 2);
+        Project project3 = new Project(3L, "Projet Circus", 3);
         Project project4 = null;
 
         TaskAndProject taskAndProject1 = new TaskAndProject();

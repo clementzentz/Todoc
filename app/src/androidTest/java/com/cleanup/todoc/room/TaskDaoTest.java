@@ -9,6 +9,7 @@ import com.cleanup.todoc.model.TaskAndProject;
 import com.cleanup.todoc.util.LiveDataTestUtil;
 import com.cleanup.todoc.util.TestUtil;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -27,6 +28,20 @@ public class TaskDaoTest extends TodocDatabaseTest{
 
     @Rule
     public InstantTaskExecutorRule rule = new InstantTaskExecutorRule();
+    private long mInsert1;
+    private long mInsert2;
+    private long mInsert3;
+
+    @Before
+    public void setup(){
+        TestUtil.TEST_TASK_1.setTask_id(0);
+        TestUtil.TEST_TASK_2.setTask_id(1);
+        TestUtil.TEST_TASK_3.setTask_id(2);
+
+        mInsert1 = getProjectDao().insert(TestUtil.project1);
+        mInsert2 = getProjectDao().insert(TestUtil.project2);
+        mInsert3 = getProjectDao().insert(TestUtil.project3);
+    }
 
     /*
         insert, read, delete
@@ -35,8 +50,10 @@ public class TaskDaoTest extends TodocDatabaseTest{
     public void insertReadDelete() throws  Exception{
 
         Task task = new Task(TestUtil.TEST_TASK_1);
+        task.setTaskProjectId(mInsert1);
         // insert
-        getTaskDao().insert(task); // TODO: wait until inserted
+        getTaskDao().insert(task);
+
         // read
         LiveDataTestUtil<List<TaskAndProject>> liveDataTestUtil = new LiveDataTestUtil<>();
         List<TaskAndProject> insertedTasks = liveDataTestUtil.getValue(getTaskDao().getTasksWithProject());
@@ -65,8 +82,9 @@ public class TaskDaoTest extends TodocDatabaseTest{
     public void insertReadUpdateReadDelete() throws  Exception{
 
         Task task = new Task(TestUtil.TEST_TASK_1);
+        task.setTaskProjectId(mInsert1);
         // insert
-        getTaskDao().insert(task); // wait until inserted
+        getTaskDao().insert(task);
         // read
         LiveDataTestUtil<List<TaskAndProject>> liveDataTestUtil = new LiveDataTestUtil<>();
         List<TaskAndProject> insertedTasks = liveDataTestUtil.getValue(getTaskDao().getTasksWithProject());
@@ -104,11 +122,12 @@ public class TaskDaoTest extends TodocDatabaseTest{
     }
 
     /*
-        insert note with null title, throw exception
+        insert task with null name, throw exception
      */
     @Test(expected = SQLiteConstraintException.class)
     public void insert_nullTitle_throwSQLiteConstraintException() throws Exception{
         final Task task = new Task(TestUtil.TEST_TASK_2);
+        task.setTaskProjectId(mInsert1);
         task.setName(null);
 
         // insert
@@ -116,11 +135,12 @@ public class TaskDaoTest extends TodocDatabaseTest{
     }
 
     /*
-        insert, update with null title, throw exception
+        insert, update with null name, throw exception
      */
     @Test(expected = SQLiteConstraintException.class)
     public void updateNote_nullTitle_throwsSQLiteConstraintException() throws Exception{
         Task task = new Task(TestUtil.TEST_TASK_3);
+        task.setTaskProjectId(mInsert1);
 
         // insert
         getTaskDao().insert(task);
@@ -131,7 +151,7 @@ public class TaskDaoTest extends TodocDatabaseTest{
         assertNotNull(insertedTasks);
 
         // update
-        task = new Task(insertedTasks.get(0).getTask());
+        task = insertedTasks.get(0).getTask();
         task.setName(null);
         getTaskDao().update(task);
     }

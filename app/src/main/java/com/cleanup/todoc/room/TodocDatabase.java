@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {Task.class, Project.class}, version = 9)
+@Database(entities = {Task.class, Project.class}, version =10 )
 public abstract class TodocDatabase extends RoomDatabase {
 
     private static final String TAG = "TodocDatabase";

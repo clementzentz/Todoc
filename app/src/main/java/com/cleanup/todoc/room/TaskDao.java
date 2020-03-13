@@ -28,7 +28,7 @@ public interface TaskDao {
     void deleteAll();*/
 
     @Insert
-    void insert(Task task);
+    long insert(Task task);
 
     @Delete
     int delete(Task task);
