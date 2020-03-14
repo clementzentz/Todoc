@@ -25,12 +25,12 @@ public class TaskDaoTest extends TodocDatabaseTest{
     private static final long TEST_PROJECT_ID = 2L;
     private static final long TEST_TIMESTAMP = new Date().getTime();
 
-
-    @Rule
-    public InstantTaskExecutorRule rule = new InstantTaskExecutorRule();
     private long mInsert1;
     private long mInsert2;
     private long mInsert3;
+
+    @Rule
+    public InstantTaskExecutorRule rule = new InstantTaskExecutorRule();
 
     @Before
     public void setup(){
@@ -127,7 +127,7 @@ public class TaskDaoTest extends TodocDatabaseTest{
     @Test(expected = SQLiteConstraintException.class)
     public void insert_nullTitle_throwSQLiteConstraintException() throws Exception{
         final Task task = new Task(TestUtil.TEST_TASK_2);
-        task.setTaskProjectId(mInsert1);
+        task.setTaskProjectId(mInsert2);
         task.setName(null);
 
         // insert
@@ -140,7 +140,7 @@ public class TaskDaoTest extends TodocDatabaseTest{
     @Test(expected = SQLiteConstraintException.class)
     public void updateNote_nullTitle_throwsSQLiteConstraintException() throws Exception{
         Task task = new Task(TestUtil.TEST_TASK_3);
-        task.setTaskProjectId(mInsert1);
+        task.setTaskProjectId(mInsert3);
 
         // insert
         getTaskDao().insert(task);

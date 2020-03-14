@@ -15,17 +15,8 @@ import java.util.List;
 @Dao
 public interface TaskDao {
 
-    @Query("SELECT * FROM task_table")
-    LiveData<List<Task>> getTasks();
-
     @Query("SELECT * FROM task_table INNER JOIN PROJECT_TABLE ON task_table.taskProject_id = project_table.project_id")
     LiveData<List<TaskAndProject>> getTasksWithProject();
-
-/*    @Query("SELECT * FROM Task WHERE id LIKE :id")
-    List<Task> getTaskWithCustomQuery(int id);*/
-
-    /*@Query("DELETE FROM task_table")
-    void deleteAll();*/
 
     @Insert
     long insert(Task task);

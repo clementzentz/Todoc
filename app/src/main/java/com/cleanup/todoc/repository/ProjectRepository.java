@@ -30,16 +30,7 @@ public class ProjectRepository {
         TodocDatabase.databaseWriteExecutor.execute(() -> mProjectDao.insert(project));
     }
 
-    public void updateProject(Project project){
-        TodocDatabase.databaseWriteExecutor.execute(() -> mProjectDao.update(project));
-    }
-
-/*    public void deleteProject(Project project){
+    public void deleteProject(Project project){
         TodocDatabase.databaseWriteExecutor.execute(() -> mProjectDao.delete(project));
-    }*/
-
-    public Project getProjectById(long id){
-        TodocDatabase.databaseWriteExecutor.execute(() -> mProjectById = mProjectDao.getProjectWithIdQuery(id));
-        return mProjectById;
     }
 }

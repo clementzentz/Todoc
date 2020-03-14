@@ -48,17 +48,12 @@ public abstract class TodocDatabase extends RoomDatabase {
         public void onOpen(@NonNull SupportSQLiteDatabase db) {
             super.onOpen(db);
 
-            // If you want to keep data through app restarts,
-            // comment out the following block
-
             ProjectDao projectDao = INSTANCE.getProjectDao();
-            TaskDao taskDao = INSTANCE.getTaskDao();
 
                 databaseWriteExecutor.execute(() -> {
                     // Populate the database in the background.
-                    // If you want to start with more words, just add them.
+                    // If you want to start with more projects, just add them.
                     List<Project> projectsSync = projectDao.getProjectsSync();
-                    List<Task> tasksSync = taskDao.getTasks().getValue();
 
                     if (projectsSync == null || projectsSync.isEmpty()) {
                         Project[] projects = new Project[]{
@@ -70,8 +65,6 @@ public abstract class TodocDatabase extends RoomDatabase {
                             Log.d(TAG, "onOpen: insert project "+project.getName()+" in db.");
                             projectDao.insert(project);
                         }
-                    }if ((tasksSync == null) || tasksSync.isEmpty()){
-
                     }
                 });
         }

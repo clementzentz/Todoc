@@ -14,16 +14,10 @@ import java.util.List;
 public class TaskRepository {
 
     private TaskDao mTaskDao;
-    private LiveData<List<Task>> mAllTasks;
 
     public TaskRepository(Application application) {
         TodocDatabase  db = TodocDatabase.getInstance(application);
         mTaskDao = db.getTaskDao();
-        mAllTasks = mTaskDao.getTasks();
-    }
-
-    public LiveData<List<Task>> getAllTasks(){
-        return mAllTasks;
     }
 
     public void insert(Task task){

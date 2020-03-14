@@ -23,15 +23,6 @@ public interface ProjectDao {
     @Query("SELECT * FROM project_table")
     List<Project> getProjectsSync();
 
-    @Query("SELECT * FROM project_table WHERE project_id = :id")
-    Project getProjectWithIdQuery(long id);
-
     @Delete
-    int delete(Project... projects);
-
-    /*@Query("DELETE FROM project_table")
-    void deleteAll();*/
-
-    @Update
-    int update(Project... projects);
+    int delete(Project project);
 }
