@@ -10,11 +10,11 @@ public class TodocDatabaseTest {
 
     private TodocDatabase mTodocDatabase;
 
-    public TaskDao getTaskDao(){
+    TaskDao getTaskDao(){
         return mTodocDatabase.getTaskDao();
     }
 
-    public ProjectDao getProjectDao(){
+    ProjectDao getProjectDao(){
         return mTodocDatabase.getProjectDao();
     }
 

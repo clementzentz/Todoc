@@ -24,6 +24,7 @@ public class TaskDaoTest extends TodocDatabaseTest{
     private static final String TEST_NAME = "Nom de la tâche test";
     private static final long TEST_PROJECT_ID = 2L;
     private static final long TEST_TIMESTAMP = new Date().getTime();
+    private static final String TEST_NULL_NAME = null;
 
     private long mInsert1;
     private long mInsert2;
@@ -125,10 +126,10 @@ public class TaskDaoTest extends TodocDatabaseTest{
         insert task with null name, throw exception
      */
     @Test(expected = SQLiteConstraintException.class)
-    public void insert_nullTitle_throwSQLiteConstraintException() throws Exception{
+    public void insert_nullTitle_throwSQLiteConstraintException() {
         final Task task = new Task(TestUtil.TEST_TASK_2);
         task.setTaskProjectId(mInsert2);
-        task.setName(null);
+        task.setName(TEST_NULL_NAME);
 
         // insert
         getTaskDao().insert(task);
@@ -152,7 +153,7 @@ public class TaskDaoTest extends TodocDatabaseTest{
 
         // update
         task = insertedTasks.get(0).getTask();
-        task.setName(null);
+        task.setName(TEST_NULL_NAME);
         getTaskDao().update(task);
     }
 }

@@ -60,8 +60,12 @@ public class Task {
         this.setCreationTimestamp(creationTimestamp);
     }
 
+    /**
+     * @param task constructor for test
+     */
     @Ignore
     public Task(Task task){
+        task_id = 0;
         taskProjectId = task.getTaskProjectId();
         name = task.getName();
         creationTimestamp = task.getTimestamp();
