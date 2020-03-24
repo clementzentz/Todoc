@@ -133,4 +133,9 @@ public class MainActivityTest {
         onView(withRecyclerView(R.id.list_tasks).atPositionOnView(0, R.id.img_delete)).perform(click());
         onView(withRecyclerView(R.id.list_tasks).atPositionOnView(0, R.id.img_delete)).perform(click());
     }
+
+    //retro engineering SQLite
+    //diagrame de cas d'utilisation
+    //génération de l'apk realease créer et signé (jks)
+    //code obfuské dans le build.gradle
 }
